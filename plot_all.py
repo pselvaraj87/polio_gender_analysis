@@ -33,6 +33,78 @@ for c in ['Polio 0', 'Polio 1', 'Polio 2', 'Polio 3', 'IPV']:
 
 # plot mum's status vs vaccination
 channels = dict(zip(['sc1q1a', 'sc1q01', 'sc1q05', 'sc2q01', 'sc2q05', 'sc2q08', 'sc2q11', 'seaq01', 'seaq03'],
-                    ['Can read', 'Education background', 'Highet grade', 'Have you used:', 'Personal phone',
-                     'Internet last 3 months', 'Internet last 12 months', 'Work', 'Shop/business/farm']))
+                    ['Can read', 'Education background', 'Highest grade', 'Have you used:', 'Personal phone',
+                     'Internet last 3 months', 'Internet last 12 months', 'Work', 'Enterprise']))
 
+vaccination_key_x_axis = dict(zip([i for i in range(1, 5)],
+                          ['Yes, on card', 'Yes, according\nto memory', 'No', 'Yes, By Polio\ncampaign']))
+
+df_parents.rename(columns=polio_channels, inplace=True)
+df_parents.rename(columns=channels, inplace=True)
+
+answer_key = {'Can read': {1: 'Yes', 2: 'No'}, 'Education background': {1: 'Never attended', 2: 'Attended school',
+                                                                        3: 'Currently attending'},
+              'Have you used:': {1: 'Desktop', 2: 'Laptop', 3: 'Tablet', 4: 'Other', 5: 'None'},
+              'Personal phone': {1: 'Mobile', 2: 'Smart', 3: 'None'},
+              'Internet last 3 months': {1: 'Yes', 2: 'No'}, 'Internet last 12 months': {1: 'Yes', 2: 'No'},
+              'Work': {1: 'Yes', 2: 'No'}, 'Enterprise': {1: 'Yes', 2: 'No,\nseeking work', 3:'No,\nnot seeking'}}
+
+
+# for p in ['mom']:
+for x in ['by_channel', 'by_vax_type']:
+# for x in ['by_vax_type']:
+    for p in ['mom']:
+    # for p in ['mom', 'dad']:
+        for sc in ['Can read', 'Education background', 'Highest grade', 'Have you used:', 'Personal phone',
+                         'Internet last 3 months', 'Internet last 12 months', 'Work', 'Enterprise']:
+        # for sc in ['Personal phone',
+        #            ]:
+            for i, c in enumerate(['Polio 0', 'Polio 1', 'Polio 2', 'Polio 3', 'IPV']):
+                dftemp = df_parents[df_parents['Parent']==p]
+                df = dftemp.groupby([sc, c]).size().reset_index(name='counts')
+                df[c] = df[c].apply(lambda x: vaccination_key_x_axis[x])
+                if sc in answer_key:
+                    df[sc] = df[sc].apply(lambda x: answer_key[sc][x])
+                    if x == 'by_channel':
+                        df['%'] = 100 * df['counts'] / df.groupby(sc)['counts'].transform('sum')
+                        sns.barplot(data=df, x=sc, y="%", hue=c, errorbar="sd")
+                        plt.ylabel(f'Percentage of {p}s - {sc}')
+                        plt.title(f'Govt. data: {p}s - {sc}')
+                    else:
+                        df['%'] = 100 * df['counts'] / df.groupby(c)['counts'].transform('sum')
+                        sns.barplot(data=df, x=c, y="%", hue=sc, errorbar="sd")
+                        plt.ylabel(f'Percentage of {p}s - {c}')
+                        plt.title(f'Govt. data: {p}s - {c}')
+                    plt.ylim([0, 100])
+                else:
+                    df[sc] = df[sc].astype(int)
+                    if x == 'by_channel':
+                        df['%'] = 100 * df['counts'] / df.groupby(sc)['counts'].transform('sum')
+
+                        ax = sns.barplot(data=df, x=sc, y="%", hue=c, errorbar="sd")
+
+                        ax.set_ylabel(f'Percentage of {p}s - {sc}')
+                        ax.set_title(f'Govt. data: {p}s - {sc}')
+
+                    else:
+                        df['%'] = 100 * df['counts'] / df.groupby(c)['counts'].transform('sum')
+                        norm = plt.Normalize(dftemp[sc].min(), dftemp[sc].max())
+                        sm = plt.cm.ScalarMappable(cmap="Blues", norm=norm)
+                        sm.set_array([])
+
+                        ax = sns.barplot(data=df, x=c, y="%", hue=sc, palette='Blues')
+
+                        ax.set_ylabel(f'Percentage of {p}s - {c}')
+                        ax.set_title(f'Govt. data: {p}s - {c}')
+                        ax.get_legend().remove()
+
+                        cbar = ax.figure.colorbar(sm)
+                        cbar.ax.set_ylabel('Highest grade', rotation=270, labelpad=15)
+                        cbar.ax.set_ylim([0, 28])
+                        cbar.ax.get_yaxis().set_ticks([0, 7, 14, 21, 28])
+
+                # sns.barplot(data=df, x=sc, y="%", hue=c, errorbar="sd")
+                sc_string = sc.replace(' ', '_')
+                # plt.show()
+                plt.savefig(os.path.join(fig_dir, f'{p}-{sc_string}-{c}-govt_{x}.png'))
+                plt.close('all')
