@@ -5,9 +5,9 @@ import os
 
 # Run govt_data.py first
 
-df_kids = pd.read_csv('/Users/pselvaraj/Github/polio_gender_analysis/data/govt_kids.csv')
-df_parents = pd.read_csv('/Users/pselvaraj/Github/polio_gender_analysis/data/govt_parents.csv')
-fig_dir = '/Users/pselvaraj/Github/polio_gender_analysis/figures'
+df_kids = pd.read_csv('/Users/prashanthselvaraj/Github/polio_gender_analysis/data/govt_kids.csv')
+df_parents = pd.read_csv('/Users/prashanthselvaraj/Github/polio_gender_analysis/data/govt_parents.csv')
+fig_dir = '/Users/prashanthselvaraj/Github/polio_gender_analysis/figures'
 os.makedirs(fig_dir, exist_ok=True)
 
 polio_channels = dict(zip(['siaq5h', 'siaq5i', 'siaq5j', 'siaq5k', 'siaq5l'],
@@ -23,10 +23,10 @@ for c in ['Polio 0', 'Polio 1', 'Polio 2', 'Polio 3', 'IPV']:
     df['%'] = 100 * df['counts'] / df.groupby('age')['counts'].transform('sum')
     sns.barplot(data=df, x="age", y="%", hue=c, errorbar="sd")
     plt.ylabel('Percentage of age group')
-    plt.title('Govt. data')
+    plt.title('Govt. raster_data')
     plt.savefig(os.path.join(fig_dir, f'{c}-govt.png'))
     plt.close('all')
-    # sns.barplot(data=df, x="age", y="counts", hue=c, errorbar="sd")
+    # sns.barplot(raster_data=df, x="age", y="counts", hue=c, errorbar="sd")
     # plt.ylabel(['Number per age group'])
     # plt.show()
 
@@ -69,12 +69,12 @@ for x in ['by_channel', 'by_vax_type']:
                         df['%'] = 100 * df['counts'] / df.groupby(sc)['counts'].transform('sum')
                         sns.barplot(data=df, x=sc, y="%", hue=c, errorbar="sd")
                         plt.ylabel(f'Percentage of {p}s - {sc}')
-                        plt.title(f'Govt. data: {p}s - {sc}')
+                        plt.title(f'Govt. raster_data: {p}s - {sc}')
                     else:
                         df['%'] = 100 * df['counts'] / df.groupby(c)['counts'].transform('sum')
                         sns.barplot(data=df, x=c, y="%", hue=sc, errorbar="sd")
                         plt.ylabel(f'Percentage of {p}s - {c}')
-                        plt.title(f'Govt. data: {p}s - {c}')
+                        plt.title(f'Govt. raster_data: {p}s - {c}')
                     plt.ylim([0, 100])
                 else:
                     df[sc] = df[sc].astype(int)
@@ -84,7 +84,7 @@ for x in ['by_channel', 'by_vax_type']:
                         ax = sns.barplot(data=df, x=sc, y="%", hue=c, errorbar="sd")
 
                         ax.set_ylabel(f'Percentage of {p}s - {sc}')
-                        ax.set_title(f'Govt. data: {p}s - {sc}')
+                        ax.set_title(f'Govt. raster_data: {p}s - {sc}')
 
                     else:
                         df['%'] = 100 * df['counts'] / df.groupby(c)['counts'].transform('sum')
@@ -95,7 +95,7 @@ for x in ['by_channel', 'by_vax_type']:
                         ax = sns.barplot(data=df, x=c, y="%", hue=sc, palette='Blues')
 
                         ax.set_ylabel(f'Percentage of {p}s - {c}')
-                        ax.set_title(f'Govt. data: {p}s - {c}')
+                        ax.set_title(f'Govt. raster_data: {p}s - {c}')
                         ax.get_legend().remove()
 
                         cbar = ax.figure.colorbar(sm)
@@ -103,7 +103,7 @@ for x in ['by_channel', 'by_vax_type']:
                         cbar.ax.set_ylim([0, 28])
                         cbar.ax.get_yaxis().set_ticks([0, 7, 14, 21, 28])
 
-                # sns.barplot(data=df, x=sc, y="%", hue=c, errorbar="sd")
+                # sns.barplot(raster_data=df, x=sc, y="%", hue=c, errorbar="sd")
                 sc_string = sc.replace(' ', '_')
                 # plt.show()
                 plt.savefig(os.path.join(fig_dir, f'{p}-{sc_string}-{c}-govt_{x}.png'))

@@ -1,7 +1,7 @@
 import os
 import pandas as pd
 
-data_dir = '/Users/pselvaraj/Github/polio_gender_analysis/data/govt_data'
+data_dir = '/Users/prashanthselvaraj/Github/polio_gender_analysis/data/govt_data'
 
 # children
 f = 'plist.dta'
@@ -33,7 +33,7 @@ df_e = df_e[['hhcode', 'idc', 'seaq01', 'seaq03', 'seaq10']]
 
 # Merge datasets
 df_kids = pd.merge(df_kids, df_i, on=['hhcode', 'idc'])
-df_kids.to_csv('/Users/pselvaraj/Github/polio_gender_analysis/data/govt_kids.csv')
+df_kids.to_csv('/Users/prashanthselvaraj/Github/polio_gender_analysis/raster_data/govt_kids.csv')
 
 # Parents
 df_moms = df_kids[['hhcode', 'sb1q10', 'siaq03', 'siaq5a', 'siaq5b', 'siaq5c', 'siaq5d', 'siaq5e', 'siaq5f', 'siaq5g', 'siaq5h',
@@ -49,4 +49,4 @@ df_parents = df_parents[~df_parents['idc'].isin([98, 99])]
 df_parents = pd.merge(df_parents, df_c1, on=['hhcode', 'idc'])
 df_parents = pd.merge(df_parents, df_c2, on=['hhcode', 'idc'])
 df_parents = pd.merge(df_parents, df_e, on=['hhcode', 'idc'])
-df_parents.to_csv('/Users/pselvaraj/Github/polio_gender_analysis/data/govt_parents.csv')
+df_parents.to_csv('/Users/prashanthselvaraj/Github/polio_gender_analysis/raster_data/govt_parents.csv')
