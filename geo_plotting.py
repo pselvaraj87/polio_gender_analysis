@@ -37,6 +37,9 @@ ax.scatter(df_grid['lon'], df_grid['lat'], marker='s', s=10, color=rgba_colors_g
 ax.scatter(df_fata['longitude'], df_fata['latitude'], marker='o', color='r', s=20)
 ax.set_xlim([69, 72])
 ax.set_ylim([31, 35])
+ax.text(0.22, 0.95, 'Prashanth Selvaraj\nIDM, BMGF', transform=ax.transAxes,
+        fontsize=10, color='k', alpha=0.5,
+        ha='center', va='center')
 
 
 cmap = plt.get_cmap('Greys', 100)
@@ -50,6 +53,7 @@ ticklabels = [int(x) for x in ticklabels]
 cbar.set_ticklabels(ticklabels)
 
 plt.tight_layout()
+# plt.show()
 
 plt.savefig('/Users/prashanthselvaraj/Github/polio_gender_analysis/figures/0_pop_scatter_grid_0_5.png')
 # plt.savefig('/Users/prashanthselvaraj/Github/polio_gender_analysis/figures/0_pop_scatter_0_5.png')
